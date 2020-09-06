@@ -5,6 +5,14 @@ inputs:
     description: 'Bump Version Type (major, minor, patch)'
     required: true
     default: 'patch'
+  version_metadata_path:
+    description: 'Path to file containing Version string'
+    required: true
+    default: 'VERSION'
+  generic_version_template:
+    description: 'Go Template used for updating metadata file'
+    required: true
+    default: 'version := "%d.%d.%d"'
 outputs:
   version: # id of output
     description: 'Version that was written to files'
@@ -13,6 +21,8 @@ runs:
   image: 'Dockerfile'
   env:
     PACKAGR_VERSION_BUMP_TYPE: ${{ inputs.version_bump_type }}
+    PACKAGR_VERSION_METADATA_PATH: ${{ inputs.version_metadata_path }}
+    PACKAGR_GENERIC_VERSION_TEMPLATE: ${{ inputs.generic_version_template }}
 branding:
   icon: 'chevrons-up'
   color: 'green'
