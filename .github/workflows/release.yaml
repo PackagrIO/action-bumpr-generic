@@ -1,0 +1,91 @@
+name: Release
+# This workflow is triggered manually
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump_type:
+        description: 'Version Bump Type (major, minor, patch)'
+        required: true
+        default: 'patch'
+      version_metadata_path:
+        description: 'Path to file containing Version string'
+        required: true
+        default: 'VERSION'
+      generic_version_template:
+        description: 'Go Template used for updating metadata file'
+        required: true
+        default: 'version := "%d.%d.%d"'
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container: golang:1.13
+    env:
+      PROJECT_PATH: /go/src/github.com/packagrio/bumpr
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Bump version
+        id: bump_version
+        uses: packagrio/action-bumpr-generic@master
+        with:
+          version_bump_type: ${{ github.event.inputs.version_bump_type }}
+          version_metadata_path: ${{ github.event.inputs.version_metadata_path }}
+          generic_version_template: ${{ github.event.inputs.generic_version_template }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit
+        uses: EndBug/add-and-commit@v4 # You can change this to use a specific version
+        with:
+
+          # The name of the user that will be displayed as the author of the commit
+          # Default: author of the commit that triggered the run
+          author_name: Jason Kulatunga
+
+          # The email of the user that will be displayed as the author of the commit
+          # Default: author of the commit that triggered the run
+          author_email: jason@thesparktree.com
+
+          # The local path to the directory where your repository is located. You should use actions/checkout first to set it up
+          # Default: '.'
+          cwd: ${{ env.PROJECT_PATH }}
+
+          # Whether to use the --force option on `git add`, in order to bypass eventual gitignores
+          # Default: false
+          force: false
+
+          # Whether to use the --signoff option on `git commit`
+          # Default: false
+          signoff: true
+
+          # The message for the commit
+          # Default: 'Commit from GitHub Actions'
+          message: '(${{steps.bump_version.outputs.release_version}}) Automated packaging of release by Packagr'
+
+          # Name of the tag to add to the new commit (see the paragraph below for more info)
+          # Default: ''
+          tag: ${{steps.bump_version.outputs.release_version}}
+
+        env:
+          # This is necessary in order to push a commit to the repo
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump_version.outputs.release_version }}
+          release_name: Release ${{ steps.bump_version.outputs.release_version }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ${{ env.PROJECT_PATH }}/packagr-bumpr-linux-amd64
+          asset_name: packagr-bumpr-linux-amd64
+          asset_content_type: application/octet-stream
