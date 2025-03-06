@@ -1,5 +1,5 @@
 # Container image that runs your code
-FROM packagrio/packagr:latest-ubuntu
+FROM ghcr.io/packagrio/packagr:latest-ubuntu
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
