@@ -10,7 +10,7 @@ inputs:
     required: true
     default: 'VERSION'
   generic_version_template:
-    description: 'Go Template used for updating metadata file'
+    description: 'Template used for updating metadata file'
     required: true
     default: 'version := "%d.%d.%d"'
 outputs:
