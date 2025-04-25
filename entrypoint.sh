@@ -12,7 +12,6 @@ curl -L -o /srv/packagr/packagr-bumpr $asset_url
 # make bumpr executable
 chmod +x /srv/packagr/packagr-bumpr
 
-printenv
 
 echo "Starting Bumpr $1"
 packagr-bumpr start --scm github --package_type generic
