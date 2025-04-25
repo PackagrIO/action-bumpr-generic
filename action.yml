@@ -14,10 +14,10 @@ inputs:
     required: true
     default: 'version := "%d.%d.%d"'
   generic_merge_version_file:
-    description: "Boolean value: Don't overwrite the entire version file, but merge using the template pattern"
+    description: "Don't overwrite the entire version file, but merge using the template pattern"
+    type: boolean
     required: false
-    type: string
-    default: 'false'
+    default: false
 outputs:
   version: # id of output
     description: 'Version that was written to files'
