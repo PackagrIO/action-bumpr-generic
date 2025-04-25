@@ -15,6 +15,7 @@ inputs:
     default: 'version := "%d.%d.%d"'
   generic_merge_version_file:
     description: "Don't overwrite the entire version file, but merge using the template pattern"
+    type: boolean
     required: false
     default: false
 outputs:
