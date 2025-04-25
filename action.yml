@@ -28,7 +28,7 @@ runs:
     PACKAGR_VERSION_BUMP_TYPE: ${{ inputs.version_bump_type }}
     PACKAGR_VERSION_METADATA_PATH: ${{ inputs.version_metadata_path }}
     PACKAGR_GENERIC_VERSION_TEMPLATE: ${{ inputs.generic_version_template }}
-    PACKAGR_GENERIC_MERGE_VERSION_FILE: :${{ inputs.generic_merge_version_file }}
+    PACKAGR_GENERIC_MERGE_VERSION_FILE: ${{ inputs.generic_merge_version_file }}
 branding:
   icon: 'chevrons-up'
   color: 'green'
